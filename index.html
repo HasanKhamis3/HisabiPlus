@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>نظام إدارة نقاط البيع والمشاريع</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Bootstrap + Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -156,7 +155,7 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- النص البرمجي الكامل -->
+<!-- Core Script -->
 <script>
 /* ========== الترجمة ========== */
 const translations = {
@@ -178,7 +177,7 @@ document.getElementById('langBtn').onclick = switchLang;
 
 /* ========== التنقل بالهاش ========== */
 function showSectionByHash(){
-  const hash = location.hash.slice(1) || 'pos'; // إذا لم يوجد هاش افتراضيًا pos
+  const hash = location.hash.slice(1) || 'pos';
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById(hash).classList.add('active');
   document.querySelectorAll('.sidebar .nav-link').forEach(l=>l.classList.remove('active'));
@@ -186,6 +185,13 @@ function showSectionByHash(){
 }
 window.addEventListener('hashchange', showSectionByHash);
 window.addEventListener('load', showSectionByHash);
+
+/* ========== الأزرار الوهمية (نماذج) ========== */
+window.addContract = function(){toast('هنا منطق "عقد جديد"');}
+window.addProductDlg = function(){toast('هنا منطق "منتج جديد"');}
+window.addOrder = function(){toast('هنا منطق "طلب جديد"');}
+window.addSeller = function(){toast('هنا منطق "بائع جديد"');}
+window.generateReport = function(){toast('هنا منطق "استخراج التقرير"');}
 
 /* ========== POS ========== */
 let cart = [];
