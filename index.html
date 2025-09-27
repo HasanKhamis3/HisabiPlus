@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة نقاط البيع والمشاريع</title>
+    <style>
+        /* أنماط CSS الأساسية */
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* أنماط الشريط الجانبي */
+        .sidebar {
+            width: 250px;
+            background-color: var(--secondary-color);
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            background-color: var(--primary-color);
+            text-align: center;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .sidebar-menu li {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-menu a {
+            display: block;
+            padding: 15px 20px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-menu a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-menu a.active {
+            background-color: var(--primary-color);
+        }
+        
+        /* أنماط المحتوى الرئيسي */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            color: var(--secondary-color);
+        }
+        
+        /* أنماط البطاقات */
+        .card {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 15px 20px;
+            background-color: var(--light-color);
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        /* أنماط الجداول */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: right;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: var(--light-color);
+            font-weight: bold;
+        }
+        
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        /* أنماط النماذج */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+        }
+        
+        /* أنماط الأقسام المخفية */
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        /* أنماط الاستجابة */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .main-content {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- الشريط الجانبي -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>نظام إدارة المبيعات</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active" data-section="pos">نقطة البيع</a></li>
+                <li><a href="#" data-section="contracts">العقود</a></li>
+                <li><a href="#" data-section="projects">المشاريع (البائعين)</a></li>
+                <li><a href="#" data-section="accounts">الحسابات</a></li>
+            </ul>
+        </aside>
+
+        <!-- المحتوى الرئيسي -->
+        <main class="main-content">
+            <!-- قسم نقطة البيع -->
+            <section id="pos" class="section active">
+                <div class="header">
+                    <h1 class="page-title">نقطة البيع</h1>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">فاتورة البيع</div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="product-search">بحث عن المنتج:</label>
+                            <input type="text" id="product-search" placeholder="أدخل اسم المنتج أو الباركود">
+                        </div>
+                        
+                        <table id="pos-products">
+                            <thead>
+                                <tr>
+                                    <th>اسم المنتج</th>
+                                    <th>السعر</th>
+                                    <th>الكمية</th>
+                                    <th>المجموع</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- سيتم إضافة المنتجات ديناميكياً -->
+                            </tbody>
+                        </table>
+                        
+                        <div class="total-section" style="text-align: left; margin-top: 20px;">
+                            <h3>الإجمالي: <span id="total-amount">0.00</span> ريال</h3>
+                        </div>
+                        
+                        <button class="btn-primary" style="margin-top: 15px;">إتمام البيع</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- قسم العقود -->
+            <section id="contracts" class="section">
+                <div class="header">
+                    <h1 class="page-title">إدارة العقود</h1>
+                    <button class="btn-primary">إضافة عقد جديد</button>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">قائمة العقود</div>
+                    <div class="card-body">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>رقم العقد</th>
+                                    <th>العميل</th>
+                                    <th>تاريخ البدء</th>
+                                    <th>تاريخ الانتهاء</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>CT-001</td>
+                                    <td>شركة التقنية المحدودة</td>
+                                    <td>2023-01-15</td>
+                                    <td>2023-12-15</td>
+                                    <td>نشط</td>
+                                    <td>
+                                        <button class="btn-primary">عرض</button>
+                                        <button class="btn-warning">تعديل</button>
+                                    </td>
+                                </tr>
+                                <!-- سيتم إضافة العقود ديناميكياً -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- قسم المشاريع (البائعين) -->
+            <section id="projects" class="section">
+                <div class="header">
+                    <h1 class="page-title">إدارة المشاريع (البائعين)</h1>
+                    <div>
+                        <button class="btn-primary" id="show-products">المنتجات</button>
+                        <button class="btn-primary" id="show-accounts">الحسابات</button>
+                        <button class="btn-primary" id="show-reports">التقارير</button>
+                        <button class="btn-primary" id="show-sale-requests">طلبات البيع</button>
+                    </div>
+                </div>
+                
+                <!-- قسم المنتجات -->
+                <div id="products-section" class="subsection">
+                    <div class="card">
+                        <div class="card-header">
+                            <span>إدارة المنتجات</span>
+                            <button class="btn-primary" style="float: left;">إضافة منتج جديد</button>
+                        </div>
+                        <div class="card-body">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>رمز المنتج</th>
+                                        <th>اسم المنتج</th>
+                                        <th>القيمة</th>
+                                        <th>سعر البيع</th>
+                                        <th>الصورة</th>
+                                        <th>الحالة</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>PRD-001</td>
+                                        <td>منتج تجريبي 1</td>
+                                        <td>50.00</td>
+                                        <td>60.00</td>
+                                        <td><img src="#" alt="صورة المنتج" style="width: 50px; height: 50px; background: #eee;"></td>
+                                        <td>مفعل</td>
+                                        <td>
+                                            <button class="btn-warning">تعديل</button>
+                                            <button class="btn-danger">تعطيل</button>
+                                        </td>
+                                    </tr>
+                                    <!-- سيتم إضافة المنتجات ديناميكياً -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- قسم الحسابات -->
+                <div id="accounts-section" class="subsection" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">الحسابات - المنتجات المتوفرة</div>
+                        <div class="card-body">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>اسم المنتج</th>
+                                        <th>المتوفر في نقطة البيع</th>
+                                        <th>الكمية المضافة</th>
+                                        <th>القيمة الإجمالية</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>منتج تجريبي 1</td>
+                                        <td>15</td>
+                                        <td>20</td>
+                                        <td>1000.00</td>
+                                    </tr>
+                                    <!-- سيتم إضافة البيانات ديناميكياً -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- قسم التقارير -->
+                <div id="reports-section" class="subsection" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">التقارير</div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="report-type">نوع التقرير:</label>
+                                <select id="report-type">
+                                    <option value="sales">تقرير المبيعات</option>
+                                    <option value="products">تقرير المنتجات</option>
+                                    <option value="sellers">تقرير البائعين</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="report-period">الفترة الزمنية:</label>
+                                <select id="report-period">
+                                    <option value="today">اليوم</option>
+                                    <option value="week">هذا الأسبوع</option>
+                                    <option value="month">هذا الشهر</option>
+                                    <option value="year">هذه السنة</option>
+                                    <option value="custom">مخصص</option>
+                                </select>
+                            </div>
+                            
+                            <button class="btn-primary">إنشاء التقرير</button>
+                            
+                            <div id="report-results" style="margin-top: 20px;">
+                                <!-- سيتم عرض نتائج التقرير هنا -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- قسم طلبات البيع -->
+                <div id="sale-requests-section" class="subsection" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <span>طلبات البيع</span>
+                            <button class="btn-primary" style="float: left;">إنشاء طلب بيع جديد</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="seller-info">
+                                <h3>معلومات البائع:</h3>
+                                <p>الاسم: <span id="seller-name">محمد أحمد</span></p>
+                                <p>البريد الإلكتروني: <span id="seller-email">mohamed@example.com</span></p>
+                                <p>رقم الهاتف: <span id="seller-phone">0551234567</span></p>
+                                <p>تاريخ اليوم: <span id="current-date">2023-10-15</span></p>
+                            </div>
+                            
+                            <div class="form-group" style="margin-top: 20px;">
+                                <label for="product-select">اختر المنتج:</label>
+                                <select id="product-select">
+                                    <option value="">-- اختر منتج --</option>
+                                    <!-- سيتم تعبئة الخيارات ديناميكياً -->
+                                </select>
+                            </div>
+                            
+                            <table id="sale-request-items">
+                                <thead>
+                                    <tr>
+                                        <th>اسم المنتج</th>
+                                        <th>الكمية</th>
+                                        <th>سعر البيع</th>
+                                        <th>المجموع</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- سيتم إضافة العناصر ديناميكياً -->
+                                </tbody>
+                            </table>
+                            
+                            <div class="total-section" style="text-align: left; margin-top: 20px;">
+                                <h3>الإجمالي: <span id="sale-request-total">0.00</span> ريال</h3>
+                            </div>
+                            
+                            <button class="btn-success" style="margin-top: 15px;">إرسال الطلب للموافقة</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- قسم الحسابات -->
+            <section id="accounts" class="section">
+                <div class="header">
+                    <h1 class="page-title">إدارة الحسابات</h1>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">ملخص الحسابات</div>
+                    <div class="card-body">
+                        <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
+                            <div class="account-card" style="background: #e8f5e9; padding: 20px; border-radius: 5px; margin: 10px; text-align: center; min-width: 200px;">
+                                <h3>إجمالي المبيعات</h3>
+                                <p style="font-size: 24px; font-weight: bold;">25,000 ريال</p>
+                            </div>
+                            
+                            <div class="account-card" style="background: #e3f2fd; padding: 20px; border-radius: 5px; margin: 10px; text-align: center; min-width: 200px;">
+                                <h3>المبيعات اليوم</h3>
+                                <p style="font-size: 24px; font-weight: bold;">1,250 ريال</p>
+                            </div>
+                            
+                            <div class="account-card" style="background: #fff3e0; padding: 20px; border-radius: 5px; margin: 10px; text-align: center; min-width: 200px;">
+                                <h3>عدد العملاء</h3>
+                                <p style="font-size: 24px; font-weight: bold;">150</p>
+                            </div>
+                            
+                            <div class="account-card" style="background: #fbe9e7; padding: 20px; border-radius: 5px; margin: 10px; text-align: center; min-width: 200px;">
+                                <h3>المنتجات المباعة</h3>
+                                <p style="font-size: 24px; font-weight: bold;">450</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">حركات الحسابات</div>
+                    <div class="card-body">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>التاريخ</th>
+                                    <th>النوع</th>
+                                    <th>الوصف</th>
+                                    <th>المبلغ</th>
+                                    <th>الرصيد</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2023-10-15</td>
+                                    <td>دخل</td>
+                                    <td>بيع منتجات</td>
+                                    <td>1,250.00</td>
+                                    <td>25,000.00</td>
+                                </tr>
+                                <!-- سيتم إضافة الحركات ديناميكياً -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // كود JavaScript للتفاعلية
+        document.addEventListener('DOMContentLoaded', function() {
+            // التنقل بين الأقسام الرئيسية
+            const menuLinks = document.querySelectorAll('.sidebar-menu a');
+            const sections = document.querySelectorAll('.section');
+            
+            menuLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // إزالة النشاط من جميع الروابط
+                    menuLinks.forEach(l => l.classList.remove('active'));
+                    // إضافة النشاط للرابط المختار
+                    this.classList.add('active');
+                    
+                    // إخفاء جميع الأقسام
+                    sections.forEach(section => section.classList.remove('active'));
+                    
+                    // إظهار القسم المختار
+                    const targetSection = this.getAttribute('data-section');
+                    document.getElementById(targetSection).classList.add('active');
+                });
+            });
+            
+            // التنقل بين أقسام المشاريع (البائعين)
+            const projectButtons = document.querySelectorAll('#projects button');
+            const projectSubsections = document.querySelectorAll('#projects .subsection');
+            
+            projectButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // إخفاء جميع الأقسام الفرعية
+                    projectSubsections.forEach(sub => sub.style.display = 'none');
+                    
+                    // إظهار القسم الفرعي المختار
+                    const targetId = this.id.replace('show-', '') + '-section';
+                    document.getElementById(targetId).style.display = 'block';
+                });
+            });
+            
+            // تعيين تاريخ اليوم في طلبات البيع
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('current-date').textContent = formattedDate;
+            
+            // دالة لحساب الإجمالي في نقطة البيع
+            function calculateTotal() {
+                const rows = document.querySelectorAll('#pos-products tbody tr');
+                let total = 0;
+                
+                rows.forEach(row => {
+                    const quantity = parseInt(row.querySelector('.quantity').value) || 0;
+                    const price = parseFloat(row.querySelector('.price').textContent) || 0;
+                    const rowTotal = quantity * price;
+                    
+                    row.querySelector('.row-total').textContent = rowTotal.toFixed(2);
+                    total += rowTotal;
+                });
+                
+                document.getElementById('total-amount').textContent = total.toFixed(2);
+            }
+            
+            // دالة لحساب الإجمالي في طلبات البيع
+            function calculateSaleRequestTotal() {
+                const rows = document.querySelectorAll('#sale-request-items tbody tr');
+                let total = 0;
+                
+                rows.forEach(row => {
+                    const quantity = parseInt(row.querySelector('.sale-quantity').value) || 0;
+                    const price = parseFloat(row.querySelector('.sale-price').textContent) || 0;
+                    const rowTotal = quantity * price;
+                    
+                    row.querySelector('.sale-row-total').textContent = rowTotal.toFixed(2);
+                    total += rowTotal;
+                });
+                
+                document.getElementById('sale-request-total').textContent = total.toFixed(2);
+            }
+            
+            // إضافة مستمعي الأحداث لحساب الإجمالي عند تغيير الكميات
+            document.addEventListener('input', function(e) {
+                if (e.target.classList.contains('quantity')) {
+                    calculateTotal();
+                }
+                
+                if (e.target.classList.contains('sale-quantity')) {
+                    calculateSaleRequestTotal();
+                }
+            });
+            
+            // دالة محاكاة لإضافة منتج إلى نقطة البيع
+            function addProductToPOS(product) {
+                const tbody = document.querySelector('#pos-products tbody');
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${product.name}</td>
+                    <td class="price">${product.price}</td>
+                    <td><input type="number" class="quantity" value="1" min="1"></td>
+                    <td class="row-total">${product.price}</td>
+                    <td><button class="btn-danger remove-product">إزالة</button></td>
+                `;
+                
+                tbody.appendChild(row);
+                
+                // إضافة مستمع حدث لإزالة المنتج
+                row.querySelector('.remove-product').addEventListener('click', function() {
+                    row.remove();
+                    calculateTotal();
+                });
+                
+                calculateTotal();
+            }
+            
+            // محاكاة بيانات المنتجات
+            const sampleProducts = [
+                { id: 1, name: 'منتج تجريبي 1', price: 60.00, barcode: '123456' },
+                { id: 2, name: 'منتج تجريبي 2', price: 45.00, barcode: '234567' },
+                { id: 3, name: 'منتج تجريبي 3', price: 80.00, barcode: '345678' }
+            ];
+            
+            // محاكاة البحث عن المنتجات في نقطة البيع
+            document.getElementById('product-search').addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    const searchTerm = this.value.toLowerCase();
+                    const product = sampleProducts.find(p => 
+                        p.name.toLowerCase().includes(searchTerm) || 
+                        p.barcode.includes(searchTerm)
+                    );
+                    
+                    if (product) {
+                        addProductToPOS(product);
+                        this.value = '';
+                    } else {
+                        alert('المنتج غير موجود');
+                    }
+                }
+            });
+            
+            // محاكاة إضافة منتج إلى طلب البيع
+            document.getElementById('product-select').addEventListener('change', function() {
+                const productId = this.value;
+                if (!productId) return;
+                
+                const product = sampleProducts.find(p => p.id == productId);
+                if (product) {
+                    const tbody = document.querySelector('#sale-request-items tbody');
+                    const row = document.createElement('tr');
+                    
+                    row.innerHTML = `
+                        <td>${product.name}</td>
+                        <td><input type="number" class="sale-quantity" value="1" min="1"></td>
+                        <td class="sale-price">${product.price}</td>
+                        <td class="sale-row-total">${product.price}</td>
+                        <td><button class="btn-danger remove-sale-item">إزالة</button></td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                    
+                    // إضافة مستمع حدث لإزالة العنصر
+                    row.querySelector('.remove-sale-item').addEventListener('click', function() {
+                        row.remove();
+                        calculateSaleRequestTotal();
+                    });
+                    
+                    calculateSaleRequestTotal();
+                    this.value = '';
+                }
+            });
+            
+            // تعبئة قائمة اختيار المنتجات في طلبات البيع
+            const productSelect = document.getElementById('product-select');
+            sampleProducts.forEach(product => {
+                const option = document.createElement('option');
+                option.value = product.id;
+                option.textContent = product.name;
+                productSelect.appendChild(option);
+            });
+        });
+    </script>
+</body>
+</html>
